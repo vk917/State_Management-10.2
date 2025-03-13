@@ -1,35 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createContext, useContext, useState } from "react"
 
-function App() {
-  const [count, setCount] = useState(0)
+const BulbContext=createContext();
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function ContextProvider({children}){
+  const [bulbOn,setBulb]=useState(true);
+
+  return <BulbContext.Provider value={{
+    bulbOn: bulbOn,
+    setBulb: setBulb
+  }} >
+    {children}
+  </BulbContext.Provider>
+}
+
+
+const LightState=()=>{
+  return <>
+    <ContextProvider>
+      <Light/>
+      <ToggleLight/>
+    </ContextProvider>
+  </>
+}
+
+const Light=()=>{
+  const {bulbOn}=useContext(BulbContext)
+  return <>
+    {bulbOn ? "Bulb On ": "Bulb Off"}
+  </>
+}
+
+const ToggleLight=()=>{
+  const {bulbOn,setBulb}=useContext(BulbContext);
+  
+  function toggle(){
+    setBulb(!bulbOn)
+  }
+
+  return <>
+    <button onClick={toggle}>Toggle Bulb</button>
+  </>
+}
+
+
+const App=()=>{
+  return <>
+    <LightState/>
+  </>
 }
 
 export default App
+
+
+
+// import { useState } from "react"
+
+// function App() {
+
+//   return (
+//     <>
+//       <LightBulb/>
+//     </>
+//   )
+// }
+
+// function LightBulb(){
+//   const [bulbOn,SetBulb]=useState(true);
+//   return <>
+//     <BulbState bulbOn={bulbOn}/>
+//     <ToggleBulbState SetBulb={SetBulb}/>
+//   </>
+// }
+
+// function BulbState({bulbOn}){
+//   return <>
+//     {bulbOn ? "Bulb On" : "Bulb Off"}
+//   </>
+// }
+
+// function ToggleBulbState({SetBulb}){
+
+//   function toggle(){
+//     SetBulb( currentVal => !currentVal)
+//   }
+//   return <>
+//       <button onClick={toggle}>Toggle Bulb</button>
+//   </>
+// }
+
+// export default App
